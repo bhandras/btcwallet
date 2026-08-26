@@ -242,6 +242,7 @@ func (w *Wallet) handleChainNotifications() {
 // the passed block.
 func (w *Wallet) connectBlock(dbtx walletdb.ReadWriteTx, b wtxmgr.BlockMeta) error {
 	addrmgrNs := dbtx.ReadWriteBucket(waddrmgrNamespaceKey)
+	txmgrNs := dbtx.ReadWriteBucket(wtxmgrNamespaceKey)
 
 	bs := waddrmgr.BlockStamp{
 		Height:    b.Height,
@@ -249,6 +250,13 @@ func (w *Wallet) connectBlock(dbtx walletdb.ReadWriteTx, b wtxmgr.BlockMeta) err
 		Timestamp: b.Time,
 	}
 	err := w.Manager.SetSyncedTo(addrmgrNs, &bs)
+	if err != nil {
+		return err
+	}
+
+	err = w.TxStore.DeleteMaturedLockedOutputs(
+		txmgrNs, b.Height,
+	)
 	if err != nil {
 		return err
 	}
