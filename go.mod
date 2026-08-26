@@ -1,5 +1,7 @@
 module github.com/btcsuite/btcwallet
 
+replace github.com/btcsuite/btcwallet/wtxmgr => ./wtxmgr
+
 require (
 	github.com/btcsuite/btcd v0.26.0
 	github.com/btcsuite/btcd/address/v2 v2.0.0
