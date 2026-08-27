@@ -146,6 +146,8 @@ type lockOutputOptions struct {
 // WithReleaseAfterSpend keeps an output locked until its spending transaction
 // reaches the requested confirmation count. A reorganization that disconnects
 // the spend resets the confirmation progress and keeps the lock active.
+// Older software reads the record as a time-only lease, so do not downgrade
+// while a retained lease still protects a spend below this threshold.
 func WithReleaseAfterSpend(confirmations uint32) LockOutputOption {
 	return func(opts *lockOutputOptions) {
 		opts.releaseAfterSpendConfs = confirmations
